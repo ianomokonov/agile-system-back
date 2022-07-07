@@ -11,7 +11,7 @@ export const getMySQLConfig = async (
     username: configService.get('DB_USER_NAME'),
     password: '',
     database: configService.get('DB_NAME'),
-    entities: [],
+    autoLoadEntities: true,
     synchronize: true,
   };
 };
