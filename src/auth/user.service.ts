@@ -1,4 +1,9 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtDto } from './dto/jwt.dto';
 import { SignInDto } from './dto/sign-in.dto';
 import { compare, genSalt, hash } from 'bcryptjs';
@@ -8,6 +13,7 @@ import { UserEntity } from './entity/user.entity';
 import { Repository } from 'typeorm';
 import { RefreshTokensEntity } from './entity/refresh-tokens.entity';
 import { ConfigService } from '@nestjs/config';
+import { LogInDto } from './dto/log-in.dto';
 
 @Injectable()
 export class UserService {
@@ -50,6 +56,40 @@ export class UserService {
     return {
       accessToken: await this.jwtService.signAsync(
         { id },
+        { expiresIn: '60s' },
+      ),
+      refreshToken: refreshToken,
+    };
+  }
+
+  async logIn(dto: LogInDto): Promise<JwtDto> {
+    const user = await this.getShortUser(dto.email);
+    if (!user) {
+      throw new UnauthorizedException(
+        'Пользователь с таким email и паролем не найден',
+      );
+    }
+
+    const isCorrectPassword = compare(dto.password, user.password);
+    if (!isCorrectPassword) {
+      throw new UnauthorizedException('Неверный пароль');
+    }
+
+    const refreshToken = await this.jwtService.signAsync(
+      { id: user.id },
+      {
+        secret: this.configService.get('JWT_REFRESH_SECRET'),
+      },
+    );
+
+    const tokenEntity = this.refreshTokensRepository.create({
+      token: refreshToken,
+    });
+    this.refreshTokensRepository.save(tokenEntity);
+
+    return {
+      accessToken: await this.jwtService.signAsync(
+        { id: user.id },
         { expiresIn: '60s' },
       ),
       refreshToken: refreshToken,
