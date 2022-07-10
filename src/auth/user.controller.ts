@@ -1,10 +1,4 @@
-import {
-  BadRequestException,
-  Body,
-  Controller,
-  HttpCode,
-  Post,
-} from '@nestjs/common';
+import { Body, Controller, HttpCode, Post } from '@nestjs/common';
 import { UserService } from './user.service';
 import { LogInDto } from './dto/log-in.dto';
 import { SignInDto } from './dto/sign-in.dto';
@@ -18,9 +12,9 @@ export class UserController {
     return this.userService.signIn(dto);
   }
 
-  // @HttpCode(200)
-  // @Post('login')
-  // async logIn(@Body() dto: LogInDto) {
-  //   return this.userService.logIn(dto);
-  // }
+  @HttpCode(200)
+  @Post('login')
+  async logIn(@Body() dto: LogInDto) {
+    return this.userService.logIn(dto);
+  }
 }

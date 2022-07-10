@@ -5,6 +5,9 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './auth/user.module';
 import { getMySQLConfig } from './configs/my-sql.config';
+import { ProjectModule } from './project/project.module';
+import { TaskModule } from './task/task.module';
+import { SprintModule } from './sprint/sprint.module';
 
 @Module({
   imports: [
@@ -15,6 +18,9 @@ import { getMySQLConfig } from './configs/my-sql.config';
       useFactory: getMySQLConfig,
     }),
     UserModule,
+    ProjectModule,
+    TaskModule,
+    SprintModule,
   ],
   controllers: [AppController],
   providers: [AppService],
