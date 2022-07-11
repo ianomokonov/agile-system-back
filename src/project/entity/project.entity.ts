@@ -17,6 +17,7 @@ import { ProjectUserEntity } from './project-user.entity';
 export class ProjectEntity {
   @PrimaryGeneratedColumn()
   id: number;
+
   @Column({ type: 'text' })
   description: string;
 
@@ -24,7 +25,7 @@ export class ProjectEntity {
   owner: UserEntity;
 
   @OneToMany(() => ProjectUserEntity, (userLink) => userLink.project)
-  public userLinks!: ProjectUserEntity[];
+  public userLinks: ProjectUserEntity[];
 
   @OneToMany(() => ProjectRoleEntity, (role) => role.project)
   roles: ProjectRoleEntity[];

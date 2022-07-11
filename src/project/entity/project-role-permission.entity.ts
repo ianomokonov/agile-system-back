@@ -1,9 +1,12 @@
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 import { Permissions } from '../permissions';
 import { ProjectRoleEntity } from './project-role.entity';
 
 @Entity()
 export class ProjectRolePermissionEntity {
+  @PrimaryGeneratedColumn()
+  public id: number;
+
   @ManyToOne(() => ProjectRoleEntity, (role) => role.permissions)
   projectRole: ProjectRoleEntity;
 
@@ -11,5 +14,5 @@ export class ProjectRolePermissionEntity {
     type: 'enum',
     enum: Permissions,
   })
-  permissionId: Permissions;
+  public permissionId: Permissions;
 }
